@@ -1,0 +1,6 @@
+{
+    "java.project.referencedLibraries": [
+        "/home/khang/Downloads/hadoop/hadoop-3.3.0/share/hadoop/*/*.jar",
+        "/home/khang/Downloads/hadoop/hadoop-3.3.0/share/hadoop/*/lib/*.jar"
+    ]
+}
