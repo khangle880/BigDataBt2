@@ -9,10 +9,10 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 
-import components.classes.Couple;
+import components.classes.*;
 
-public class job3b {
-    public static class Job3bMapper extends Mapper<Object, Text, IntWritable, Couple> {
+public class job3d {
+    public static class Job3dMapper extends Mapper<Object, Text, Couple, Couple> {
 
         @Override
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
@@ -28,17 +28,19 @@ public class job3b {
 
                 IntWritable a = new IntWritable(Integer.parseInt(arrItems[0]));
                 IntWritable b = new IntWritable(Integer.parseInt(arrItems[1]));
-                IntWritable v = new IntWritable(Integer.parseInt(arrItems[2]));
-                context.write(a, new Couple(b, v));
-                context.write(b, new Couple(a, v));
+                IntWritable c = new IntWritable(Integer.parseInt(arrItems[2]));
+                IntWritable v = new IntWritable(Integer.parseInt(arrItems[3]));
+                context.write(new Couple(b, c), new Couple(a, v));
+                context.write(new Couple(a, c), new Couple(b, v));
+                context.write(new Couple(a, b), new Couple(c, v));
             }
         }
     }
 
-    public static class Job3bReducer extends Reducer<IntWritable, Couple, Couple, String> {
+    public static class Job3dReducer extends Reducer<Couple, Couple, Triple, String> {
 
         @Override
-        public void reduce(IntWritable key, Iterable<Couple> values, Context context)
+        public void reduce(Couple key, Iterable<Couple> values, Context context)
                 throws IOException, InterruptedException {
 
             int sumA = 0;
@@ -67,7 +69,7 @@ public class job3b {
             }
 
             for (Couple c : arrResults) {
-                Couple newKey = new Couple(key, c.GetFirst());
+                Triple newKey = new Triple(key.GetFirst(), key.GetSecond(), c.GetFirst());
                 context.write(newKey, new String(c.GetSecond().get() + "/" + sumA));
             }
         }
